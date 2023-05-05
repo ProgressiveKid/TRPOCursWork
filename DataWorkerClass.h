@@ -1,5 +1,4 @@
 #pragma once
-#include "DataWorkerClass.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -19,7 +18,10 @@
 #include <algorithm>
 #include <fstream>
 #include <io.h>
-#include <fcntl.h>
-#include <chrono>
 #include <ctime>
-#include "FileWorker.h"
+#include "FileWorker.cpp"
+#include <stdio.h>
+#include <ctime>
+#define _CRT_SECURE_NO_WARNINGS
+
+using namespace std;

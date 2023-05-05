@@ -7,11 +7,12 @@
 #include <vector>
 #include <conio.h> // для функции _getch()
 #include "CryptoClass.cpp"
-#include "DataWorkerClass.h"
+#include "DataWorkerClass.cpp"
+
 
 using namespace std;
-string const UsersFile = "usersSystem.txt";
-string const InfoUsersFile = "infoUsers.txt";
+extern string const UsersFile = "usersSystem.txt";
+string const DataCallFile = "infoUsers.txt";
 void UserInterface()
 {
 }
@@ -79,6 +80,7 @@ void CRUDDataInterface()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
+			DataWorkerClass::createData(DataCallFile);
 			break;
 		case 2:
 			break;
@@ -107,7 +109,7 @@ void DataInterface()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-		
+			CRUDDataInterface();
 			break;
 		case 2:
 		

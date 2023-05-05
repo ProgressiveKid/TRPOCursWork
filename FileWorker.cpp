@@ -1,4 +1,5 @@
 #include "FileWorker.h"
+#pragma once
 using namespace std;
 class FileWorker {
 public:
