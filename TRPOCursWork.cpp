@@ -1,14 +1,14 @@
-﻿// TRPOCursWork.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-#include <iostream>
+﻿#include <iostream>
 #include <windows.h>
 #include <wincrypt.h>
 #include <string>
-#include "FileWorker.h"
+#include "FileWorker.cpp"
 #include "Structures.h"
 #include <vector>
 #include <conio.h> // для функции _getch()
-#include "CryptoClass.h"
+#include "CryptoClass.cpp"
+#include "DataWorkerClass.h"
+
 using namespace std;
 string const UsersFile = "usersSystem.txt";
 string const InfoUsersFile = "infoUsers.txt";
@@ -47,16 +47,16 @@ void CRUDUserInterface()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-			FileWorker::CreateUser(UsersFile);
+			FileWorker::createUser(UsersFile);
 			break;
 		case 2:
 			ChooseView();
 			break;
 		case 3:
-			FileWorker::UpdateUser(UsersFile);
+			FileWorker::updateUser(UsersFile);
 			break;
 		case 4:
-			FileWorker::DeleteUser(UsersFile);
+			FileWorker::deleteUser(UsersFile);
 			break;
 		case 5:
 			break;
@@ -66,7 +66,6 @@ void CRUDUserInterface()
 		}
 	} while (choice != 5);
 }
-
 void CRUDDataInterface()
 {
 	int choice = 0;

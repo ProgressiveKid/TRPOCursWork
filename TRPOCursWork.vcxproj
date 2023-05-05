@@ -128,13 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DataWorkerClass.cpp" />
+    <ClCompile Include="FileWorker.cpp" />
     <ClCompile Include="TRPOCursWork.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CryptoClass.cpp" />
     <ClInclude Include="CryptoClass.h" />
     <ClInclude Include="DataWorkerClass.h" />
     <ClInclude Include="FileWorker.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Structures.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="TRPOCursWork.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
