@@ -2,19 +2,22 @@
 #include <windows.h>
 #include <wincrypt.h>
 #include <string>
+#include "GlobalVariablesClass.h"
 //#include "FileWorker.h"
 #include "DataWorkerClass.cpp"
 #include "FileWorker.cpp"
 #include "Structures.h"
 #include <vector>
+#include "IndividualTask.h"
 //#include "ReadFromFileClass.h"
 #include <conio.h> // для функции _getch()
 //#include "CryptoClass.h"
 //#include "DataWorkerClass.h"
 using namespace std;
 
-static string const UsersFile = "usersSystem.txt";
-static string const DataCallFile = "infoUsers.txt";
+static string const UsersFile = GlobalVariablesClass::UsersFile;
+static string const DataCallFile = GlobalVariablesClass::DataCallFile;
+string Username;
 void UserInterface()
 {
 }
@@ -59,7 +62,7 @@ void CRUDUserInterface()
 			FileWorker::updateUser(UsersFile);
 			break;
 		case 4:
-			FileWorker::deleteUser(UsersFile);
+			FileWorker::deleteUser(UsersFile, Username);
 			break;
 		case 5:
 			break;
@@ -102,7 +105,36 @@ void CRUDDataInterface()
 			break;
 		}
 	} while (choice != 5);
+}
 
+void IndividualProcessing()
+{
+	int choice = 0;
+	do {
+		std::cout << "Выберите опцию:\n";
+		std::cout << "1. Индивидуальное задание\n";
+		std::cout << "2. Поиск\n";
+		std::cout << "3. Сортировка\n";
+		std::cout << "4. Назад\n";
+		std::cin >> choice;
+		switch (choice) {
+		case 1:
+			IndividualTask::IndividualTasksInterface();
+
+			break;
+		case 2:
+			break;
+		case 3:
+
+			break;
+		case 4:
+
+			break;
+		default:
+			std::cout << "Неправильный выбор.\n";
+			break;
+		}
+	} while (choice != 4);
 
 }
 
@@ -131,6 +163,8 @@ void DataInterface()
 	} while (choice != 3);
 
 }
+
+
 void AdminInterface(string login)
 {
 	int choice = 0;
@@ -151,6 +185,7 @@ void AdminInterface(string login)
 			//UserInterface();
 			break;
 		case 3:
+			IndividualProcessing();
 			break;
 		case 4:
 			std::cout << "Выход...\n";
@@ -191,6 +226,7 @@ void Authorisation()
 			auto hashPassword = CryptoClass::hashPasswordWithSaltMethod(password, item.salt);
 			if (hashPassword == item.saltedHashPassword)
 			{
+				Username = username;
 				cout << "Вы вошли в систему:\n";
 				if (item.role == "0") // это пользователь
 				{

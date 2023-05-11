@@ -20,6 +20,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include "ReadFromFileClass.h"
+#include "GlobalVariablesClass.h"
 //#include "DataWorkerClass.cpp"
 using namespace std;
 class FileWorker {

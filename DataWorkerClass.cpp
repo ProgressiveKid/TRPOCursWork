@@ -21,6 +21,7 @@
 #include <cwctype> // Для использования std::iswdigit()
 #include <__msvc_chrono.hpp>
 #include "ReadFromFileClass.h"
+#include "GlobalVariablesClass.h"
 using namespace std;
 
 
@@ -105,7 +106,7 @@ public:
 		}
 		bool isLoginCorrect = false; string login;
 		vector<CallRecord> records = ReadFromFileClass::getDataArray(filename);
-		vector<User> recordsUsers = ReadFromFileClass::getUserArray("usersSystem.txt");
+		vector<User> recordsUsers = ReadFromFileClass::getUserArray(GlobalVariablesClass::UsersFile);
 		User user; // Пользователь для которого создаём запись <-----------
 		while (!isLoginCorrect) {
 			cout << "Введите логин аббонента: ";

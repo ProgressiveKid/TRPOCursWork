@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "Structures.h"
 #include <string>
 #include <fstream>
@@ -7,7 +6,6 @@
 #include <windows.h>
 #include <sstream>
 #include "Structures.h"
-#include <vector>
 #include <iostream>
 #include <fstream>
 #include <string>
