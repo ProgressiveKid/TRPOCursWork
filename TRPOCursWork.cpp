@@ -2,17 +2,19 @@
 #include <windows.h>
 #include <wincrypt.h>
 #include <string>
+//#include "FileWorker.h"
+#include "DataWorkerClass.cpp"
 #include "FileWorker.cpp"
 #include "Structures.h"
 #include <vector>
+//#include "ReadFromFileClass.h"
 #include <conio.h> // для функции _getch()
-#include "CryptoClass.cpp"
-#include "DataWorkerClass.cpp"
-
-
+//#include "CryptoClass.h"
+//#include "DataWorkerClass.h"
 using namespace std;
-extern string const UsersFile = "usersSystem.txt";
-string const DataCallFile = "infoUsers.txt";
+
+static string const UsersFile = "usersSystem.txt";
+static string const DataCallFile = "infoUsers.txt";
 void UserInterface()
 {
 }
@@ -83,10 +85,15 @@ void CRUDDataInterface()
 			DataWorkerClass::createData(DataCallFile);
 			break;
 		case 2:
+			DataWorkerClass::viewData(DataCallFile);
 			break;
 		case 3:
+			DataWorkerClass::updateCallRecord(DataCallFile);
+
 			break;
 		case 4:
+			DataWorkerClass::deleteCallRecord(DataCallFile);
+
 			break;
 		case 5:
 			break;
@@ -112,7 +119,7 @@ void DataInterface()
 			CRUDDataInterface();
 			break;
 		case 2:
-		
+			
 			break;
 		case 3:
 
@@ -139,7 +146,9 @@ void AdminInterface(string login)
 			CRUDUserInterface();
 			break;
 		case 2:
-			UserInterface();
+			//DataInterface();
+			CRUDDataInterface();
+			//UserInterface();
 			break;
 		case 3:
 			break;
@@ -159,7 +168,7 @@ void Authorisation()
 	string password;
 	cin >> username;
 	FileWorker::checkFile(UsersFile); //Проверка существует ли файл
-	vector<User> records = FileWorker::getUserArray(UsersFile);
+	vector<User> records = ReadFromFileClass::getUserArray(UsersFile);
 	for (auto& item : records)
 	{
 		if (item.login == username)

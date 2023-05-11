@@ -1,5 +1,26 @@
-#include "FileWorker.h"
-#pragma once
+//#include "FileWorker.h"
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <windows.h>
+#include <sstream>
+#include "CryptoClass.cpp"
+#include "Structures.h"
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
+#include <sstream>
+#include <map>
+#include <iomanip> // для std::setw()
+#include <windows.h>
+#include <algorithm>
+#include <fstream>
+#include <io.h>
+#include <fcntl.h>
+#include "ReadFromFileClass.h"
+//#include "DataWorkerClass.cpp"
 using namespace std;
 class FileWorker {
 public:
@@ -12,31 +33,6 @@ public:
 			cout << "Новый файл создан \n";
 		}
 	}
-	static std::vector<User> getUserArray(std::string filename)
-	{// Не трогаем - он правильно берет данные из текстового файла
-		std::ifstream file(filename);
-		const int MAX_RECORDS = 100; // максимальное количество записей
-		User recordsArray[MAX_RECORDS]; // массив структур
-		if (file.is_open()) {
-			std::string line;
-			int index = 0;
-			while (std::getline(file, line) && index < MAX_RECORDS) {
-				User record;
-				std::istringstream iss(line);
-				iss >> record.login >> record.role >>
-					record.salt >> record.saltedHashPassword >>
-					record.subscriberName >> record.subscriberNumber;
-				recordsArray[index] = record;
-				++index;
-			}
-			file.close();
-			std::vector<User> records(recordsArray, recordsArray + index);
-			return records;
-		}
-		else {
-			std::cout << "Не удалось открыть файл для чтения.\n";
-		}
-	}
 	static void updateUsersFile(vector<User> users, const std::string& filename, string Operation)
 	{ //редактирует адекватно
 		std::ofstream outFile(filename, std::ios_base::out | std::ios_base::binary);
@@ -45,9 +41,11 @@ public:
 			std::cout << "Не удалось открыть файл для записи.\n";
 			return;
 		}
+		int newIndex = 0;
 		for (const auto& user : users)
 		{
-			outFile << user.login << " " << user.role << " " << user.salt << " " << user.saltedHashPassword << " " << user.subscriberName << " " << user.subscriberNumber << std::endl;
+			newIndex++;
+			outFile << newIndex << " " << user.login << " " << user.role << " " << user.salt << " " << user.saltedHashPassword << " " << user.subscriberName << " " << user.subscriberNumber << std::endl;
 		}
 		if (Operation == "del")
 		{
@@ -59,6 +57,18 @@ public:
 		}
 		outFile.close();
 	}
+	static int generateMobileNumber()
+	{
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<int> digitDist(0, 9);
+		string mobileNumber;
+		for (int i = 0; i < 8; ++i) {
+			int digit = digitDist(gen);
+			mobileNumber += digit;
+		}
+		return stoi(mobileNumber);
+	}
 	static void createUser(const std::string& filename) {
 		std::ofstream file;
 		file.open(filename, std::ios::app | std::ios_base::binary);
@@ -68,7 +78,7 @@ public:
 		}
 		bool isLoginCorrect = false;
 		string login;
-		vector<User> records = FileWorker::getUserArray(filename);
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
 		while (!isLoginCorrect) {
 			cout << "Введите логин: ";
 			cin >> login;
@@ -106,19 +116,14 @@ public:
 		string FIO = getFullFIO();
 		int phoneNumber = 0;
 		std::srand(std::time(nullptr)); // вызов относительно времени
-		int subscriber_numer = rand() % 1000000000;
+		int subscriber_numer = generateMobileNumber();
 		//file._setmode(_fileno(stdout), _O_WTEXT);
-		file << login << " "
-			<< role << " "
-			<< salt << " "
-			<< hashPassword << " "
-			<< FIO << " "
+		file << records.size() + 1 << " " << login << " " << role << " "
+			<< salt << " "<< hashPassword << " " << FIO << " "
 			<< to_string(subscriber_numer) << std::endl;
 		file.close();
 		if (role == 1)
-		{
 			cout << "Администратор добавлен\n";
-		}
 		else
 			cout << "Пользователь добавлен\n";
 	}
@@ -127,7 +132,6 @@ public:
 		string newData;
 		std::cout << "Введите новое значение для " + parametr;
 		std::cin >> newData;
-		//Проверка ввода фамилии
 		return newData;
 	}
 	static string getFullFIO() // ВВод полного ФИО
@@ -153,12 +157,42 @@ public:
 		std::cout << "Полное имя: " << fullName << std::endl;
 		return fullName;
 	}
+	static void ChangeFIO(string filename, string oldFIO, string newFIO)
+	{
+		vector<CallRecord> records = ReadFromFileClass::getDataArray(filename);
+		for (auto& item : records) {
+			if (item.subscriberName == oldFIO)
+			{
+				item.subscriberName = newFIO;
+			}
+		}
+		updateDataFile(records, filename, " ");
+	}
+	static void updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation)
+	{ //редактирует адекватно
+		std::ofstream outFile(filename, std::ios_base::out | std::ios_base::binary);
+		if (!outFile.is_open())
+		{
+			std::cout << "Не удалось открыть файл для записи.\n";
+			return;
+		}
+		int newIndex = 0;
+		for (const auto& record : data)
+		{
+			newIndex++;
+			outFile << " " << newIndex << " " << record.subscriberNumber << " " << record.subscriberName << " " <<
+				record.isOutgoingCall << " " << record.callNumber << " " <<
+				record.callDate << " " << record.callTime << " " <<
+				record.callDuration << " " << record.tariffPerMinute << std::endl;
+		}
+		outFile.close();
+	}
 	static void updateUser(string filename) // Редактирования файла с пользователями
 	{
 		string login;
 		std::cout << "Введите логин пользователя для поиска:\n";
 		std::cin >> login;
-		vector<User> records = FileWorker::getUserArray(filename);
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
 		bool isFounded = false;
 		for (auto& item : records) {
 			if (item.login == login)
@@ -175,6 +209,7 @@ public:
 					std::cin >> choice;
 					std::string firstName, lastName, middleName;
 					std::stringstream fullNameStream;
+					string OldFIO;
 					string newParam;
 					bool IsCorrect = true;
 					switch (choice) {
@@ -202,7 +237,7 @@ public:
 						break;
 					case 3:
 						do {
-							newParam = changeParametr("номера телефона:\n");
+							newParam = changeParametr("номера телефона (8 символов):\n");
 							for (char c : newParam) {
 								if (!isdigit(c)) {
 									IsCorrect = false;
@@ -214,12 +249,32 @@ public:
 									IsCorrect = true;
 								}
 							}
+							//проверка корректности длины телефона
+							if (newParam.size() != 8)
+							{
+								IsCorrect = false;
+								std::cout << "В номере телефона должно быть 8 цифр:\n";
+							}
+							else
+							{
+								for (auto& item : records) {
+									if (item.subscriberNumber == stoi(newParam))
+									{
+										IsCorrect = false;
+										std::cout << "Такой номер телефона уже существует:\n";
+										break;
+									}
+								}
+							}
 						} while (IsCorrect == false);
-						item.subscriberNumber = stoi(newParam);
+						item.subscriberNumber = stoi(newParam); // перевели в секунды
 						choice = 5;
 						break;
 					case 4:
+						OldFIO = item.subscriberName;
 						item.subscriberName = getFullFIO();
+						// Также меняем фио в файле с записями звонков
+						ChangeFIO("infoUsers.txt", OldFIO, item.subscriberName);
 						choice = 5;
 						break;
 					case 5:
@@ -239,15 +294,16 @@ public:
 			std::cout << "Нет такого логина в система:\n";
 		}
 	}
-	static void deleteUser(string filename)
+	static void deleteUser(string filename, string username)
 	{
 		string login;
 		std::cout << "Введите логин пользователя для удаления:\n";
 		std::cin >> login;
-		vector<User> records = FileWorker::getUserArray(filename);
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
 		bool isFounded = false;
 		for (int i = 0; i < records.size(); i++) {
 			if (records[i].login == login) {
+				
 				isFounded = true;
 				//std::remove_if(records.begin(), records.end(), records[i]), records.end();
 				records.erase(records.begin() + i);
@@ -260,20 +316,48 @@ public:
 		}
 		else
 		{
-			updateUsersFile(records, filename, "del");
+			if (login == username)
+			{
+				std::cout << "Невозможно удалить собственную учётную запись\n";
+			}
+			else
+			{
+				std::string answer;
+				while (true) {
+					std::cout << "Вы действительно хотите удалить данного пользователя? (да/нет): ";
+					std::cin >> answer;
+					if (answer == "да" || answer == "Да" || answer == "ДА") {
+						// Выполнение действий удаления файла или записи
+						updateUsersFile(records, filename, "del");
+						break;
+					}
+					else if (answer == "нет" || answer == "Нет" || answer == "НЕТ") {
+						std::cout << "Удаление файла (записи) отменено.\n";
+						break;
+					}
+					else {
+						std::cout << "Некорректный ввод. Пожалуйста, введите 'да' или 'нет'.\n";
+						// Очистка буфера ввода
+						std::cin.clear();
+					}
+				}
+			}
+				
 		}
 	}
 	static void viewAllUsers(string filename) // Просмотр всех пользователей
 	{
 		setlocale(LC_CTYPE, "rus");
-		vector<User> records = FileWorker::getUserArray(filename);
-		std::cout << std::setw(15) << std::left << "| Логин"
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
+		std::cout << std::setw(4) << std::left << "| №"
+			<< std::setw(15) << std::left << "| Логин"
 			<< std::setw(30) << std::left << "| ФИО"
 			<< std::setw(20) << std::left << "| Номер телефона" << std::endl;
 		std::cout << "---------------------------------------------------------------" << std::endl;
 		//SetConsoleOutputCP(CP_UTF8);
 		for (auto& item : records) {
-			std::cout << std::setw(15) << std::left << "| " + item.login
+			std::cout << std::setw(4) << std::left << "| " + std::to_string(item.key)
+				<< setw(15) << std::left << "| " + item.login
 				<< std::setw(30) << std::left << "| " + item.subscriberName
 				<< std::setw(20) << std::left << "| " + to_string(item.subscriberNumber) + "" << std::endl;
 			std::cout << "---------------------------------------------------------------" << std::endl;
@@ -284,20 +368,22 @@ public:
 		string login;
 		std::cout << "Введите логин пользователя для поиска:\n";
 		std::cin >> login;
-		vector<User> records = FileWorker::getUserArray(filename);
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
 		bool isFounded = false;
 		for (auto& item : records) {
 			if (item.login == login)
 			{
-				std::cout << "Такой пользователь найден\n";
-				std::cout << std::setw(15) << std::left << "| Логин"
+				std::cout << std::setw(4) << std::left << "| №"
+					<< std::setw(15) << std::left << "| Логин"
 					<< std::setw(30) << std::left << "| ФИО"
 					<< std::setw(20) << std::left << "| Номер телефона" << std::endl;
 				std::cout << "---------------------------------------------------------------" << std::endl;
-				std::cout << std::setw(15) << std::left << "| " + item.login
-					<< std::setw(30) << std::left << "| " + item.subscriberName
-					<< std::setw(20) << std::left << "| " + to_string(item.subscriberNumber) + "" << std::endl;
-				std::cout << "---------------------------------------------------------------" << std::endl;
+				//SetConsoleOutputCP(CP_UTF8);
+					std::cout << std::setw(4) << std::left << "| " + std::to_string(item.key)
+						<< setw(15) << std::left << "| " + item.login
+						<< std::setw(30) << std::left << "| " + item.subscriberName
+						<< std::setw(20) << std::left << "| " + to_string(item.subscriberNumber) + "" << std::endl;
+					std::cout << "---------------------------------------------------------------" << std::endl;
 				isFounded = true;
 			}
 		}

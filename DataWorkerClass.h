@@ -4,7 +4,6 @@
 #include <iostream>
 #include <windows.h>
 #include <sstream>
-#include "CryptoClass.cpp"
 #include "Structures.h"
 #include <vector>
 #include <iostream>
@@ -19,9 +18,20 @@
 #include <fstream>
 #include <io.h>
 #include <ctime>
-#include "FileWorker.cpp"
 #include <stdio.h>
 #include <ctime>
-#define _CRT_SECURE_NO_WARNINGS
-
+#include <limits>
+#include <regex>
+#include <chrono>
+#include <cwctype> // Для использования std::iswdigit()
+#include "Header.h"
+//#pragma once
 using namespace std;
+//class DataWorkerClass {
+//public:
+//
+//	static std::vector<CallRecord> getDataArray(std::string filename);
+//	//static void updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation);
+//
+//
+//};
