@@ -9,15 +9,17 @@
 #include <iostream>
 #include <fstream>
 #include <map>
+#include "DataWorkerClass.h"
 #include "ReadFromFileClass.h"
 #include "GlobalVariablesClass.h"
+#include "FileWorker.h"
 
 using namespace std;
 
 class IndividualTask
 { 
 public:
-	static void Surt(string filename);
+	static void Search();
 	static void IndividualTasksInterface();
 };
 

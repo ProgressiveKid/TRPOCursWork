@@ -1,31 +1,8 @@
-//#include "FileWorker.h"
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <windows.h>
-#include <sstream>
-#include "CryptoClass.cpp"
-#include "Structures.h"
-#include <vector>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
-#include <map>
-#include <iomanip> // для std::setw()
-#include <windows.h>
-#include <algorithm>
-#include <fstream>
-#include <io.h>
-#include <fcntl.h>
-#include "ReadFromFileClass.h"
-#include "GlobalVariablesClass.h"
+#include "FileWorker.h"
+
 //#include "DataWorkerClass.cpp"
-using namespace std;
-class FileWorker {
-public:
-	static void checkFile(string filename) {
+
+	 void FileWorker::checkFile(string filename) {
 		ifstream iff(filename, ios::out);
 		if (iff.good() == true)
 		{
@@ -34,7 +11,7 @@ public:
 			cout << "Новый файл создан \n";
 		}
 	}
-	static void updateUsersFile(vector<User> users, const std::string& filename, string Operation)
+	 void FileWorker::updateUsersFile(vector<User> users, const std::string& filename, string Operation)
 	{ //редактирует адекватно
 		std::ofstream outFile(filename, std::ios_base::out | std::ios_base::binary);
 		if (!outFile.is_open())
@@ -58,7 +35,7 @@ public:
 		}
 		outFile.close();
 	}
-	static int generateMobileNumber()
+	 int FileWorker::generateMobileNumber()
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
@@ -70,7 +47,7 @@ public:
 		}
 		return stoi(mobileNumber);
 	}
-	static void createUser(const std::string& filename) {
+	 void FileWorker::createUser(const std::string& filename) {
 		std::ofstream file;
 		file.open(filename, std::ios::app | std::ios_base::binary);
 		if (!file.is_open()) {
@@ -128,14 +105,14 @@ public:
 		else
 			cout << "Пользователь добавлен\n";
 	}
-	static string changeParametr(string parametr)
+	 string FileWorker::changeParametr(string parametr)
 	{
 		string newData;
 		std::cout << "Введите новое значение для " + parametr;
 		std::cin >> newData;
 		return newData;
 	}
-	static string getFullFIO() // ВВод полного ФИО
+	 string FileWorker::getFullFIO() // ВВод полного ФИО
 	{
 		std::string firstName, lastName, middleName;
 		std::cout << "Введите Фамилию: ";
@@ -158,7 +135,7 @@ public:
 		std::cout << "Полное имя: " << fullName << std::endl;
 		return fullName;
 	}
-	static void ChangeFIO(string filename, string oldFIO, string newFIO)
+	 void FileWorker::ChangeFIO(string filename, string oldFIO, string newFIO)
 	{
 		vector<CallRecord> records = ReadFromFileClass::getDataArray(filename);
 		for (auto& item : records) {
@@ -168,8 +145,23 @@ public:
 			}
 		}
 		updateDataFile(records, filename, " ");
+	}	
+	 void FileWorker::ChangeNumber(string filename, string FIO, int newPhone, int oldPhone)
+	{
+		vector<CallRecord> records = ReadFromFileClass::getDataArray(filename);
+		for (auto& item : records) {
+			if (item.subscriberName == FIO) // меняем исходящие звонки
+			{
+				item.subscriberNumber = newPhone;
+			}
+			if (item.callNumber == oldPhone) // меняем входящий звонок
+			{
+				item.callNumber == newPhone;
+			}
+		}
+		updateDataFile(records, filename, " ");
 	}
-	static void updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation)
+	 void FileWorker::updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation)
 	{ //редактирует адекватно
 		std::ofstream outFile(filename, std::ios_base::out | std::ios_base::binary);
 		if (!outFile.is_open())
@@ -188,7 +180,7 @@ public:
 		}
 		outFile.close();
 	}
-	static void updateUser(string filename) // Редактирования файла с пользователями
+	 void FileWorker::updateUser(string filename) // Редактирования файла с пользователями
 	{
 		string login;
 		std::cout << "Введите логин пользователя для поиска:\n";
@@ -210,8 +202,8 @@ public:
 					std::cin >> choice;
 					std::string firstName, lastName, middleName;
 					std::stringstream fullNameStream;
-					string OldFIO;
-					string newParam;
+					string OldFIO;	string newParam;
+					int oldPhone;
 					bool IsCorrect = true;
 					switch (choice) {
 					case 1:
@@ -268,14 +260,18 @@ public:
 								}
 							}
 						} while (IsCorrect == false);
-						item.subscriberNumber = stoi(newParam); // перевели в секунды
+						oldPhone = item.subscriberNumber;
+						item.subscriberNumber = stoi(newParam); 
+						//поменять этот номер телефона в файле со звонками
+						ChangeNumber(GlobalVariablesClass::DataCallFile, item.subscriberName, item.subscriberNumber, oldPhone);
+
 						choice = 5;
 						break;
 					case 4:
 						OldFIO = item.subscriberName;
 						item.subscriberName = getFullFIO();
 						// Также меняем фио в файле с записями звонков
-						ChangeFIO("infoUsers.txt", OldFIO, item.subscriberName);
+						ChangeFIO(GlobalVariablesClass::DataCallFile, OldFIO, item.subscriberName);
 						choice = 5;
 						break;
 					case 5:
@@ -295,7 +291,7 @@ public:
 			std::cout << "Нет такого логина в система:\n";
 		}
 	}
-	static void deleteUser(string filename, string username)
+	 void FileWorker::deleteUser(string filename, string username)
 	{
 		string login;
 		std::cout << "Введите логин пользователя для удаления:\n";
@@ -346,7 +342,7 @@ public:
 				
 		}
 	}
-	static void viewAllUsers(string filename) // Просмотр всех пользователей
+	 void FileWorker::viewAllUsers(string filename) // Просмотр всех пользователей
 	{
 		setlocale(LC_CTYPE, "rus");
 		vector<User> records = ReadFromFileClass::getUserArray(filename);
@@ -364,7 +360,7 @@ public:
 			std::cout << "---------------------------------------------------------------" << std::endl;
 		}
 	}
-	static void findForLoginViewUser(string filename) // Вывод информации по пользователю через его Логин
+	 void FileWorker::findForLoginViewUser(string filename) // Вывод информации по пользователю через его Логин
 	{
 		string login;
 		std::cout << "Введите логин пользователя для поиска:\n";
@@ -391,4 +387,3 @@ public:
 		if (!isFounded)
 			std::cout << "В системе нет пользователя с таким логином\n";
 	}
-};

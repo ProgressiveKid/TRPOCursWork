@@ -137,6 +137,8 @@
   <ItemGroup>
     <ClInclude Include="CryptoClass.cpp" />
     <ClInclude Include="CryptoClass.h" />
+    <ClInclude Include="DataWorkerClass.h" />
+    <ClInclude Include="FileWorker.h" />
     <ClInclude Include="GlobalVariablesClass.h" />
     <ClInclude Include="IndividualTask.h" />
     <ClInclude Include="ReadFromFileClass.h" />

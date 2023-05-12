@@ -1,33 +1,6 @@
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include "Structures.h"
-#include <vector>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <map>
-#include <iomanip> // для std::setw()
-#include <windows.h>
-#include <algorithm>
-#include <io.h>
-#include <ctime>
-#include <stdio.h>
-#include <ctime>
-#include <limits>
-#include <regex>
-#include <chrono>
-#include <cwctype> // Для использования std::iswdigit()
-#include <__msvc_chrono.hpp>
-#include "ReadFromFileClass.h"
-#include "GlobalVariablesClass.h"
-using namespace std;
+#include "DataWorkerClass.h"
 
-
-class DataWorkerClass {
-public:
-	static void checkFile(string filename) {
+	 void DataWorkerClass::checkFile(string filename) {
 		ifstream iff(filename, ios::out);
 		if (iff.good() == true)
 		{
@@ -36,7 +9,7 @@ public:
 			cout << "Новый файл создан \n";
 		}
 	}
-	static int ConvertToInt(const std::string& str)
+	 int DataWorkerClass::ConvertToInt(const std::string& str)
 	{
 		try {
 			size_t pos;
@@ -53,7 +26,7 @@ public:
 		// Если преобразование не удалось или остались недопустимые символы, возвращаем значение по умолчанию
 		return 0; // Или любое другое значение по вашему выбору
 	}
-	static bool IsDouble(const std::string& str) {
+	 bool DataWorkerClass::IsDouble(const std::string& str) {
 		try {
 			size_t pos;
 			double value = std::stod(str, &pos);
@@ -66,7 +39,7 @@ public:
 		}
 		return false;
 	}
-	static double getCallTariff(const std::string dateTimeString) {
+	 double DataWorkerClass::getCallTariff(const std::string dateTimeString) {
 		// Разбиваем дату и время звонка на составляющие
 		std::tm timeinfo = {};
 		std::istringstream iss(dateTimeString);
@@ -96,7 +69,7 @@ public:
 		}
 		return tariff;
 	}
-	static void createData(const std::string& filename) {
+	 void DataWorkerClass::createData(const std::string& filename) {
 		cout << "---Введите информацию о звонке:--- \n";
 		std::ofstream file;
 		file.open(filename, std::ios::app | std::ios_base::binary);
@@ -142,7 +115,7 @@ public:
 			for (auto& item : recordsUsers)
 			{
 				if ((item.subscriberNumber == IntCallPhone || item.login == CallPhone) && item.login != login)
-				{
+				{// нельзя звонить самому себе
 					CallUser = item;
 					IsCorrect = true;
 					break;
@@ -185,7 +158,7 @@ public:
 		file.close();
 		cout << " Запись добавлена \n";
 	}
-	static void viewData(const std::string& filename) {
+	 void DataWorkerClass::viewData(const std::string& filename) {
 		setlocale(LC_CTYPE, "rus");
 		vector<CallRecord> records = ReadFromFileClass::getDataArray(filename);
 		std::cout << std::setw(4) << std::left << "| №"
@@ -216,14 +189,14 @@ public:
 				<< std::setw(30) << std::left << formattedTariff << std::endl;
 		}
 	}
-	static string changeParametr(string parametr)
+	 string DataWorkerClass::changeParametr(string parametr)
 	{
 		string newData;
 		std::cout << "Введите новое значение для " + parametr;
 		std::cin >> newData;
 		return newData;
 	}
-	static void updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation)
+	 void DataWorkerClass::updateDataFile(vector<CallRecord> data, const std::string& filename, string Operation)
 	{ //редактирует адекватно
 		std::ofstream outFile(filename, std::ios_base::out | std::ios_base::binary);
 		if (!outFile.is_open())
@@ -254,7 +227,7 @@ public:
 		}
 		outFile.close();
 	}
-	static bool isValidDate(int day, int month, int year)
+	 bool DataWorkerClass::isValidDate(int day, int month, int year)
 	{
 		if (year < 1900 || year > 2100 || month < 1 || month > 12)
 			return false;
@@ -269,7 +242,7 @@ public:
 		}
 		return day >= 1 && day <= maxDay;
 	}
-	static int inputComponent(const std::string& componentName, int minValue, int maxValue) {
+	 int DataWorkerClass::inputComponent(const std::string& componentName, int minValue, int maxValue) {
 		int component;
 		while (true) {
 			std::cout << "Введите " << componentName << ": ";
@@ -284,7 +257,7 @@ public:
 		}
 		return component;
 	}
-	static string inputDate()
+	 string DataWorkerClass::inputDate()
 	{
 		std::string date;
 		//std::cout << "\nВведите  ";
@@ -306,7 +279,7 @@ public:
 		}
 		return date;
 	}
-	static string inputTime()
+	 string DataWorkerClass::inputTime()
 	{
 		std::string time;
 		int hour = inputComponent("Время", 1, 60);
@@ -320,7 +293,7 @@ public:
 		time = Hour + ":" + Minute;
 		return time;
 	}
-	static void updateCallRecord(string filename)
+	 void DataWorkerClass::updateCallRecord(string filename)
 	{
 		int callKey;
 		std::cout << "Введите номер записи для поиска:\n";
@@ -334,7 +307,7 @@ public:
 				do {
 					std::cout << "Что вы хотите редактировать?:\n";
 					std::cout << "*Редактирование ФИО и номера аббонента происходит при редактировании пользователя\n";
-					std::cout << "1. Номер исходящего вызова\n";
+					std::cout << "1. Тип звонка (входящий/исходящий)\n";
 					std::cout << "2. Дату звонка\n";
 					std::cout << "3. Время звонка\n";
 					std::cout << "4. Продолжительность\n";
@@ -348,7 +321,13 @@ public:
 						do {
 							newParam = changeParametr("исходящего вызова (Да/Нет):\n");
 							if (newParam == "Да" || newParam == "да" || newParam == "Нет" || newParam == "нет") {
-								item.isOutgoingCall = (newParam == "Да" || newParam == "да");
+								if (newParam == "Да" || newParam == "да")
+								{
+									item.isOutgoingCall = false;
+
+								}
+								else
+									item.isOutgoingCall = true;
 								isCorrect = true;
 							}
 							else {
@@ -401,7 +380,7 @@ public:
 			std::cout << "Нет такого номера вызова в системе:\n";
 		}
 	}
-	static void deleteCallRecord(string filename)
+	 void DataWorkerClass::deleteCallRecord(string filename)
 	{
 		int callKey;
 		std::cout << "Введите номер записи для удаления:\n";
@@ -441,4 +420,4 @@ public:
 		}
 		//std::cout << "Вы действительно хотите удалить данного пользователя?:\n";
 	}
-};
+

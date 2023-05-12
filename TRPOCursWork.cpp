@@ -4,8 +4,8 @@
 #include <string>
 #include "GlobalVariablesClass.h"
 //#include "FileWorker.h"
-#include "DataWorkerClass.cpp"
-#include "FileWorker.cpp"
+#include "DataWorkerClass.h"
+#include "FileWorker.h"
 #include "Structures.h"
 #include <vector>
 #include "IndividualTask.h"
@@ -26,7 +26,7 @@ void ChooseView()
 	int choiceView = 0;
 	std::cout << "Выберите опцию:\n";
 	std::cout << "1. Вывод всех пользователей\n";
-	std::cout << "2. Вывод информации о пользователе по его логину\n";
+	std::cout << "2. Поиск информации о пользователе по его логину\n";
 	std::cin >> choiceView;
 	switch (choiceView) {
 	case 1:
@@ -120,9 +120,10 @@ void IndividualProcessing()
 		switch (choice) {
 		case 1:
 			IndividualTask::IndividualTasksInterface();
-
 			break;
 		case 2:
+			IndividualTask::Search();
+
 			break;
 		case 3:
 
@@ -172,7 +173,7 @@ void AdminInterface(string login)
 		std::cout << login + ", выберите опцию:\n";
 		std::cout << "1. Работа с учётными записями\n";
 		std::cout << "2. Работа с данными\n";
-		std::cout << "3. Индивидуальное задание\n";
+		std::cout << "3. Обработка данных\n";
 		std::cout << "4. Выход\n";
 		std::cin >> choice;
 		switch (choice) {
