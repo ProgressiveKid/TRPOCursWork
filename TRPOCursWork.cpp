@@ -126,6 +126,7 @@ void IndividualProcessing()
 
 			break;
 		case 3:
+			IndividualTask::Sort();
 
 			break;
 		case 4:

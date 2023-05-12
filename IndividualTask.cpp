@@ -63,7 +63,6 @@ void IndividualTask::Search()
 				if (record.subscriberName == FIO) {
 					recordsForTask.push_back(record);
 				}
-
 			}
 			break;
 		case 3:
@@ -110,7 +109,6 @@ void IndividualTask::Search()
 		}
 	} while (choice != 5);
 }
-//void ShowInformation
 void IndividualTask::IndividualTasksInterface()
 {
 	vector<CallRecord> records = ReadFromFileClass::getDataArray(GlobalVariablesClass::DataCallFile);
@@ -119,15 +117,31 @@ void IndividualTask::IndividualTasksInterface()
 	string startTime = DataWorkerClass::inputDate(); string endTime;
 	if (!startTime.empty())
 	{
+
 		std::cout << "Введите конечное время для фильтрации:\n";
 		endTime = DataWorkerClass::inputDate();
 		if (!endTime.empty())
 		{
+			std::tm tm1 = {};
+			std::tm tm2 = {};
+			std::tm tm3 = {};
+
+			std::istringstream ss1(startTime);
+			std::istringstream ss2(endTime);
+
+			// Парсинг строковых дат в структуру std::tm
+			ss1 >> std::get_time(&tm1, "%d.%m.%Y");
+			ss2 >> std::get_time(&tm2, "%d.%m.%Y");
+
 			for (auto& item : records) {
-				if (item.callDate >= startTime && item.callDate <= endTime)
+				std::istringstream ss3(item.callDate);
+				ss3 >> std::get_time(&tm3, "%d.%m.%Y");
+
+				if (std::mktime(&tm1) >= std::mktime(&tm3) && std::mktime(&tm3) <= std::mktime(&tm1))
 				{
 					recordsForTask.push_back(item);
 				}
+
 			}
 		}
 	}
@@ -187,3 +201,53 @@ void IndividualTask::IndividualTasksInterface()
 		std::cout << "По заданной выборке не найдено ни одного совпадения\n";
 	}
 };
+
+bool compareByDuration(const CallRecord& record1, const CallRecord& record2) {
+	return record1.callDuration < record2.callDuration;
+}
+bool compareByFIO(const CallRecord& record1, const CallRecord& record2) {
+	return record1.subscriberName < record2.subscriberName;
+}
+bool compareByDate(const CallRecord& record1, const CallRecord& record2) {
+
+
+
+	return record1.callDate < record2.callDate;
+}
+
+
+
+void IndividualTask::Sort()
+{
+	int choice = 0;
+	do {
+		vector<CallRecord> records = ReadFromFileClass::getDataArray(GlobalVariablesClass::DataCallFile);
+		//vector<CallRecord> recordsForTask;
+		std::cout << "Выберите параметр для сортировки:\n";
+		std::cout << "1. ФИО абонента\n";
+		std::cout << "2. Дата звонка\n";
+		std::cout << "3. Продолжительность\n";
+		std::cout << "4. Назад\n";
+		std::cin >> choice;
+
+		switch (choice) {
+		case 1:
+			std::sort(records.begin(), records.end(), compareByFIO);
+			ViewInfoForTask(records);
+			break;
+		case 2:
+			std::sort(records.begin(), records.end(), compareByDate);
+			ViewInfoForTask(records);
+			break;
+		case 3:
+			std::sort(records.begin(), records.end(), compareByDuration);
+			ViewInfoForTask(records);
+			break;
+		default:
+			std::cout << "Неправильный выбор.\n";
+			break;
+		}
+
+
+	} while (choice != 4);
+}

@@ -21,5 +21,7 @@ class IndividualTask
 public:
 	static void Search();
 	static void IndividualTasksInterface();
+	static void Sort();
+
 };
 
