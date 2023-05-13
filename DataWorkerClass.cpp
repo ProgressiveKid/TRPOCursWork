@@ -1,5 +1,4 @@
 #include "DataWorkerClass.h"
-
 	 void DataWorkerClass::checkFile(string filename) {
 		ifstream iff(filename, ios::out);
 		if (iff.good() == true)
@@ -105,7 +104,6 @@
 		else
 			true;
 		std::cin.ignore();
-		//0 false, а 1 true
 		string CallPhone; bool IsCorrect = false;
 		User CallUser; // тот кому звоним или тот кто нам звонит
 		do {
@@ -129,7 +127,6 @@
 			std::cout << "Введите продолжительность вызова (в минутах): " << endl;
 			std::getline(std::cin, CallDuration);
 			if (IsDouble(CallDuration)) {
-				//std::cout << "Число введено правильно." << std::endl;
 				break;
 			}
 			else {
@@ -172,7 +169,6 @@
 			<< std::setw(20) << std::left << "| Тариф на минуту"
 			<< std::endl;
 		for (auto& item : records) {
-			//	string callduration = to_string();
 			ostringstream oss;
 			oss << std::fixed << std::setprecision(1) << item.callDuration / 60;
 			string formattedDuration = "| " + oss.str(); oss.str("");
@@ -212,7 +208,6 @@
 				record.isOutgoingCall << " " << record.callNumber << " " <<
 				record.callDate << " " << record.callTime << " " <<
 				record.callDuration << " " << record.tariffPerMinute << std::endl;
-			//outFile << newIndex << " " << record.login << " " << record.role << " " << record.salt << " " << record.saltedHashPassword << " " << record.subscriberName << " " << record.subscriberNumber << std::endl;
 		}
 		if (Operation == "del")
 		{
@@ -324,7 +319,6 @@
 								if (newParam == "Да" || newParam == "да")
 								{
 									item.isOutgoingCall = false;
-
 								}
 								else
 									item.isOutgoingCall = true;
@@ -353,7 +347,6 @@
 						do {
 							newParam = changeParametr("продолжительности звонка:\n");
 							if (IsDouble(newParam)) {
-								//std::cout << "Число введено правильно." << std::endl;
 								isCorrect = true;
 							}
 							else
@@ -390,8 +383,6 @@
 		for (int i = 0; i < records.size(); i++) {
 			if (records[i].key == callKey) {
 				isFounded = true;
-				//std::remove_if(records.begin(), records.end(), records[i]), records.end();
-				//records.erase(records.begin() + i);
 				std::string answer;
 				while (true) {
 					std::cout << "Вы действительно хотите удалить запись? (да/нет): ";
@@ -418,6 +409,4 @@
 		if (!isFounded) {
 			std::cout << "Нет такого номера вызова в системе:\n";
 		}
-		//std::cout << "Вы действительно хотите удалить данного пользователя?:\n";
 	}
-

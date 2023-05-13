@@ -4,7 +4,7 @@
 
 
 	std::vector<User> ReadFromFileClass::getUserArray(std::string filename)
-	{// Не трогаем - он правильно берет данные из текстового файла
+	{
 		std::ifstream file(filename);
 		const int MAX_RECORDS = 100; // максимальное количество записей
 		User recordsArray[MAX_RECORDS]; // массив структур
@@ -29,7 +29,7 @@
 		}
 	}
 	std::vector<CallRecord> ReadFromFileClass::getDataArray(std::string filename)
-	{// Не трогаем - он правильно берет данные из текстового файла
+	{
 		std::ifstream file(filename);
 		const int MAX_RECORDS = 150; // максимальное количество записей
 		CallRecord recordsArray[MAX_RECORDS]; // массив структур

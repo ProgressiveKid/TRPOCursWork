@@ -2,14 +2,25 @@
 
 //#include "DataWorkerClass.cpp"
 
-	 void FileWorker::checkFile(string filename) {
-		ifstream iff(filename, ios::out);
-		if (iff.good() == true)
+	 void FileWorker::checkFile(string fileUser, string fileInfo) {
+		ifstream iff(fileUser, ios::out);
+		if (iff.good() == false)
 		{
 			//Предусмотри чтобы файл создавался в нужной кодировке
-			std::ofstream file(filename);
-			cout << "Новый файл создан \n";
+			std::ofstream file(fileUser);
+			file << 1 << " " << "admin" << " " << 1 << " "
+				<< "AHgXRGU55gKOnKHw" << " "
+				<< "bfknefpkckfjbcpoilinaeeblmkfggbpcnccakmdcilcfeboijmehigigooecbap" << " " << "Голуб_Владислав_Сергеевич" << " "
+				<< "59741426" << std::endl;
 		}
+		ifstream iffs(fileInfo, ios::out);
+		if (iffs.good() == false)
+		{
+
+			std::ofstream file(fileInfo);
+
+		}
+
 	}
 	 void FileWorker::updateUsersFile(vector<User> users, const std::string& filename, string Operation)
 	{ //редактирует адекватно
@@ -43,7 +54,7 @@
 		string mobileNumber;
 		for (int i = 0; i < 8; ++i) {
 			int digit = digitDist(gen);
-			mobileNumber += digit;
+			mobileNumber += to_string(digit);
 		}
 		return stoi(mobileNumber);
 	}

@@ -25,7 +25,7 @@
 using namespace std;
 class FileWorker {
 public:
-	static void checkFile(string filename);
+	static void checkFile(string filename, string fileInfo);
 	static void updateUsersFile(vector<User> users, const std::string& filename, string Operation);
 	static int generateMobileNumber();
 	static void createUser(const std::string& filename);
