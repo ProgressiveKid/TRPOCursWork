@@ -6,6 +6,8 @@
 		ifstream iff(fileUser, ios::out);
 		if (iff.good() == false)
 		{
+			std::cout << "Новый файл с админом создан\n";
+
 			//Предусмотри чтобы файл создавался в нужной кодировке
 			std::ofstream file(fileUser);
 			file << 1 << " " << "admin" << " " << 1 << " "

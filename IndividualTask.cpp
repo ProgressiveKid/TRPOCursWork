@@ -1,4 +1,5 @@
 #include "IndividualTask.h"
+
 void ViewInfoForTask(vector<CallRecord> records) // вывод информации по фильтрации
 {
 	std::cout << std::setw(4) << std::left << "| №"
@@ -75,7 +76,7 @@ void IndividualTask::Search()
 				{// нельзя звонить самому себе
 					recordsForTask.push_back(item);
 					IsCorrect = true;
-					break;
+					//break;
 				}
 			}
 			break;
@@ -89,7 +90,7 @@ void IndividualTask::Search()
 					{// нельзя звонить самому себе
 						recordsForTask.push_back(item);
 						IsCorrect = true;
-						break;
+						//break;
 					}
 				}
 			break;
@@ -150,7 +151,6 @@ void IndividualTask::IndividualTasksInterface()
 	}
 	if (recordsForTask.size() > 0)
 	{
-		//	ViewInfoForTask(recordsForTask);
 		int choice = 0;
 		do {
 			std::cout << "Выберите опцию:\n";

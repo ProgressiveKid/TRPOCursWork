@@ -95,7 +95,7 @@
 				break;
 		}
 		bool typeCall; // флаг для звонка <----------
-		cout << "Звонок пользователя исходящий(0) или входящий(1) ? :";
+		cout << "Звонок пользователя исходящий(1) или входящий(0) ? :";
 		cin >> typeCall;
 		if (typeCall == 1)
 			typeCall = true;
@@ -161,11 +161,11 @@
 		std::cout << std::setw(4) << std::left << "| №"
 			<< std::setw(17) << std::left << "| Номер абонента"
 			<< std::setw(30) << std::left << "| ФИО абонента"
-			<< std::setw(20) << std::left << "| Исходящий вызов"
+			<< std::setw(19) << std::left << "| Исходящий вызов"
 			<< std::setw(15) << std::left << "| Номер вызова"
 			<< std::setw(15) << std::left << "| Дата звонка"
 			<< std::setw(15) << std::left << "| Время звонка"
-			<< std::setw(30) << std::left << "| Продолжительность (мин)"
+			<< std::setw(18) << std::left << "| Прод-ть. (мин)"
 			<< std::setw(20) << std::left << "| Тариф на минуту"
 			<< std::endl;
 		for (auto& item : records) {
@@ -177,11 +177,11 @@
 			std::cout << std::setw(4) << std::left << "| " + std::to_string(item.key)
 				<< std::setw(17) << std::left << "| " + std::to_string(item.subscriberNumber)
 				<< std::setw(30) << std::left << "| " + item.subscriberName
-				<< std::setw(20) << std::left << "| " + (item.isOutgoingCall ? std::string("Да") : std::string("Нет"))
+				<< std::setw(19) << std::left << "| " + (item.isOutgoingCall ? std::string("Да") : std::string("Нет"))
 				<< std::setw(15) << std::left << "| " + std::to_string(item.callNumber)
 				<< std::setw(15) << std::left << "| " + item.callDate
 				<< std::setw(15) << std::left << "| " + item.callTime
-				<< std::setw(30) << std::left << formattedDuration
+				<< std::setw(18) << std::left << formattedDuration
 				<< std::setw(30) << std::left << formattedTariff << std::endl;
 		}
 	}

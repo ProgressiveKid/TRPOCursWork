@@ -11,8 +11,8 @@
 #include "IndividualTask.h"
 #include <conio.h> // для функции _getch()
 using namespace std;
-static string const UsersFile = GlobalVariablesClass::UsersFile;
-static string const DataCallFile = GlobalVariablesClass::DataCallFile;
+static string const USERS_FILE = GlobalVariablesClass::UsersFile;
+static string const DATA_CALL_FILE = GlobalVariablesClass::DataCallFile;
 string Username;
 void UserInterface(string login)
 {
@@ -27,7 +27,7 @@ void UserInterface(string login)
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-			DataWorkerClass::viewData(DataCallFile);
+			DataWorkerClass::viewData(DATA_CALL_FILE);
 			break;
 		case 2:
 			IndividualTask::IndividualTasksInterface();
@@ -55,10 +55,10 @@ void ChooseView()
 	std::cin >> choiceView;
 	switch (choiceView) {
 	case 1:
-		FileWorker::viewAllUsers(UsersFile);
+		FileWorker::viewAllUsers(USERS_FILE);
 		break;
 	case 2:
-		FileWorker::findForLoginViewUser(UsersFile);
+		FileWorker::findForLoginViewUser(USERS_FILE);
 		break;
 	default:
 		std::cout << "Неправильный выбор.\n";
@@ -78,16 +78,16 @@ void CRUDUserInterface()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-			FileWorker::createUser(UsersFile);
+			FileWorker::createUser(USERS_FILE);
 			break;
 		case 2:
 			ChooseView();
 			break;
 		case 3:
-			FileWorker::updateUser(UsersFile);
+			FileWorker::updateUser(USERS_FILE);
 			break;
 		case 4:
-			FileWorker::deleteUser(UsersFile, Username);
+			FileWorker::deleteUser(USERS_FILE, Username);
 			break;
 		case 5:
 			break;
@@ -110,16 +110,16 @@ void CRUDDataInterface()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-			DataWorkerClass::createData(DataCallFile);
+			DataWorkerClass::createData(DATA_CALL_FILE);
 			break;
 		case 2:
-			DataWorkerClass::viewData(DataCallFile);
+			DataWorkerClass::viewData(DATA_CALL_FILE);
 			break;
 		case 3:
-			DataWorkerClass::updateCallRecord(DataCallFile);
+			DataWorkerClass::updateCallRecord(DATA_CALL_FILE);
 			break;
 		case 4:
-			DataWorkerClass::deleteCallRecord(DataCallFile);
+			DataWorkerClass::deleteCallRecord(DATA_CALL_FILE);
 			break;
 		case 5:
 			break;
@@ -214,7 +214,7 @@ void Authorisation()
 	string username;
 	string password;
 	cin >> username;
-	vector<User> records = ReadFromFileClass::getUserArray(UsersFile);
+	vector<User> records = ReadFromFileClass::getUserArray(USERS_FILE);
 	for (auto& item : records)
 	{
 		if (item.login == username)
@@ -259,10 +259,11 @@ void Authorisation()
 	}
 }
 int main()
-{	
-	FileWorker::checkFile(UsersFile, DataCallFile); //Проверка существует ли файл
+{
 	SetConsoleOutputCP(1251);
 	SetConsoleCP(1251);
+
+	FileWorker::checkFile(USERS_FILE, DATA_CALL_FILE); //Проверка существует ли файл
 	Authorisation();
 
 }

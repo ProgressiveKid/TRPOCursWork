@@ -20,7 +20,7 @@ class IndividualTask
 { 
 public:
 	static void Search();
-	static void IndividualTasksInterface();
-	static void Sort();
+	static void individualTasksInterface();
+	static void sort();
 };
 

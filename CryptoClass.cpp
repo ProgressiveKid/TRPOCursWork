@@ -50,9 +50,7 @@ public:
         // Очищаем ресурсы
         CryptDestroyHash(hHash);
         CryptReleaseContext(hProv, 0);
-       //auto result {find(hashedPassword.begin(), hashedPassword.end(), "\")};
         return CryptoClass::to_hex_string((const BYTE*)hashedPassword.data(), hashSize);
-        //return hashedPassword;
     }
    static string generate_salt(int length) {
        string salt_characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
