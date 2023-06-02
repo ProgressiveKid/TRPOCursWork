@@ -211,7 +211,7 @@ void AdminInterface(string login)
 void Authorisation()
 {
 	while (true)
-	{
+	{//firstcommit
 		cout << "Введите логин:\n";
 		string username;
 		string password;
