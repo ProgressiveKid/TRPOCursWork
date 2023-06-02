@@ -194,125 +194,115 @@
 		outFile.close();
 	}
 	 void FileWorker::updateUser(string filename) // Редактирования файла с пользователями
-   	{
-		 try
-		 {
-			 string login;
-			 std::cout << "Введите логин пользователя для поиска:\n";
-			 std::cin >> login;
-			 vector<User> records = ReadFromFileClass::getUserArray(filename);
-			 bool isFounded = false;
-			 for (auto& item : records) {
-				 if (item.login == login)
-				 {
-					 isFounded = true;
-					 int choice = 0;
-					 do {
-						 std::cout << "Что вы хотите редактировать?:\n";
-						 std::cout << "1. Логин\n";
-						 std::cout << "2. Пароль\n";
-						 std::cout << "3. Номер телефона\n";
-						 std::cout << "4. ФИО\n";
-						 std::cout << "5. Назад\n";
-						 std::cin >> choice;
-						 std::string firstName, lastName, middleName;
-						 std::stringstream fullNameStream;
-						 string OldFIO;	string newParam;
-						 int oldPhone;
-						 bool IsCorrect = true;
-						 switch (choice) {
-						 case 1:
-							 do {
-								 newParam = changeParametr("логина:\n");
-								 for (auto& item : records) {
-									 if (item.login == newParam)
-									 {
-										 std::cout << "Такой логин уже существует, придумайте другой:\n";
-										 IsCorrect = false; break;
-									 }
-									 else
-										 IsCorrect = true;
-								 }
-								 //item.login = newParam;
-							 } while (IsCorrect == false);
-							 item.login = newParam;
-							 choice = 5;
-							 break;
-						 case 2:
-							 newParam = changeParametr("пароля:\n");
-							 item.saltedHashPassword = CryptoClass::hashPasswordWithSaltMethod(newParam, item.salt);
-							 choice = 5;
-							 break;
-						 case 3:
-							 do {
-								 newParam = changeParametr("номера телефона (8 символов):\n");
-								 for (char c : newParam) {
-									 if (!isdigit(c)) {
-										 IsCorrect = false;
-										 std::cout << "В номере телефона должны быть только цифры:\n";
-										 break;
-									 }
-									 else
-									 {
-										 IsCorrect = true;
-									 }
-								 }
-								 //проверка корректности длины телефона
-								 if (newParam.size() != 8)
-								 {
-									 IsCorrect = false;
-									 std::cout << "В номере телефона должно быть 8 цифр:\n";
-								 }
-								 else
-								 {
-									 for (auto& item : records) {
-										 if (item.subscriberNumber == stoi(newParam))
-										 {
-											 IsCorrect = false;
-											 std::cout << "Такой номер телефона уже существует:\n";
-											 break;
-										 }
-									 }
-								 }
-							 } while (IsCorrect == false);
-							 oldPhone = item.subscriberNumber;
-							 item.subscriberNumber = stoi(newParam);
-							 //поменять этот номер телефона в файле со звонками
-							 ChangeNumber(GlobalVariablesClass::DataCallFile, item.subscriberName, item.subscriberNumber, oldPhone);
+	{
+		string login;
+		std::cout << "Введите логин пользователя для поиска:\n";
+		std::cin >> login;
+		vector<User> records = ReadFromFileClass::getUserArray(filename);
+		bool isFounded = false;
+		for (auto& item : records) {
+			if (item.login == login)
+			{
+				isFounded = true;
+				int choice = 0;
+				do {
+					std::cout << "Что вы хотите редактировать?:\n";
+					std::cout << "1. Логин\n";
+					std::cout << "2. Пароль\n";
+					std::cout << "3. Номер телефона\n";
+					std::cout << "4. ФИО\n";
+					std::cout << "5. Назад\n";
+					std::cin >> choice;
+					std::string firstName, lastName, middleName;
+					std::stringstream fullNameStream;
+					string OldFIO;	string newParam;
+					int oldPhone;
+					bool IsCorrect = true;
+					switch (choice) {
+					case 1:
+						do {
+							newParam = changeParametr("логина:\n");
+							for (auto& item : records) {
+								if (item.login == newParam)
+								{
+									std::cout << "Такой логин уже существует, придумайте другой:\n";
+									IsCorrect = false; break;
+								}
+								else
+									IsCorrect = true;
+							}
+							//item.login = newParam;
+						} while (IsCorrect == false);
+						item.login = newParam;
+						choice = 5;
+						break;
+					case 2:
+						newParam = changeParametr("пароля:\n");
+						item.saltedHashPassword = CryptoClass::hashPasswordWithSaltMethod(newParam, item.salt);
+						choice = 5;
+						break;
+					case 3:
+						do {
+							newParam = changeParametr("номера телефона (8 символов):\n");
+							for (char c : newParam) {
+								if (!isdigit(c)) {
+									IsCorrect = false;
+									std::cout << "В номере телефона должны быть только цифры:\n";
+									break;
+								}
+								else
+								{
+									IsCorrect = true;
+								}
+							}
+							//проверка корректности длины телефона
+							if (newParam.size() != 8)
+							{
+								IsCorrect = false;
+								std::cout << "В номере телефона должно быть 8 цифр:\n";
+							}
+							else
+							{
+								for (auto& item : records) {
+									if (item.subscriberNumber == stoi(newParam))
+									{
+										IsCorrect = false;
+										std::cout << "Такой номер телефона уже существует:\n";
+										break;
+									}
+								}
+							}
+						} while (IsCorrect == false);
+						oldPhone = item.subscriberNumber;
+						item.subscriberNumber = stoi(newParam); 
+						//поменять этот номер телефона в файле со звонками
+						ChangeNumber(GlobalVariablesClass::DataCallFile, item.subscriberName, item.subscriberNumber, oldPhone);
 
-							 choice = 5;
-							 break;
-						 case 4:
-							 OldFIO = item.subscriberName;
-							 item.subscriberName = getFullFIO();
-							 // Также меняем фио в файле с записями звонков
-							 ChangeFIO(GlobalVariablesClass::DataCallFile, OldFIO, item.subscriberName);
-							 choice = 5;
-							 break;
-						 case 5:
-							 break;
-						 default:
-							 std::cout << "Неправильный выбор.\n";
-							 break;
-						 }
-					 } while (choice != 5);
-					 updateUsersFile(records, filename, "upd");
-					 break;
-					 //запись в найш файл нового массива структур
-				 }
-			 }
-			 if (!isFounded)
-			 {
-				 std::cout << "Нет такого логина в система:\n";
-			 }
-			
-
-		 }
-		 catch (const char* error_message)
-		 {
-			 std::cout << error_message << std::endl;
-		 }
-	
+						choice = 5;
+						break;
+					case 4:
+						OldFIO = item.subscriberName;
+						item.subscriberName = getFullFIO();
+						// Также меняем фио в файле с записями звонков
+						ChangeFIO(GlobalVariablesClass::DataCallFile, OldFIO, item.subscriberName);
+						choice = 5;
+						break;
+					case 5:
+						break;
+					default:
+						std::cout << "Неправильный выбор.\n";
+						break;
+					}
+				} while (choice != 5);
+				updateUsersFile(records, filename, "upd");
+				break;
+				//запись в найш файл нового массива структур
+			}
+		}
+		if (!isFounded)
+		{
+			std::cout << "Нет такого логина в система:\n";
+		}
 	}
 	 void FileWorker::deleteUser(string filename, string username)
 	{
