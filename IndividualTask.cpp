@@ -1,5 +1,4 @@
 #include "IndividualTask.h"
-
 void ViewInfoForTask(vector<CallRecord> records) // вывод информации по фильтрации
 {
 	std::cout << std::setw(4) << std::left << "| №"
@@ -46,16 +45,26 @@ void IndividualTask::Search()
 		std::cout << "5. Назад\n";
 		int key; string PhoneNumber; int IntCallPhone; bool IsCorrect = false; string FIO;
 		std::cin >> choice;
+		bool result = cin.good();
 		switch (choice) {
 		case 1:
 			std::cout << "Введите номер записи: ";
 			std::cin >> key;
-			// Поиск по номеру записи
-			for (const auto& record : records) {
-				if (record.key == key) {
-					recordsForTask.push_back(record);
+			result = cin.good();
+			if (result)
+			{
+				for (const auto& record : records) {
+					if (record.key == key) {
+						recordsForTask.push_back(record);
+					}
 				}
 			}
+			else
+			{
+				cin.clear();
+				cin.ignore(INT_MAX, '\n');
+			}
+			// Поиск по номеру записи
 			break;
 		case 2:
 			std::cout << "Введите ФИО абонента: \n";
@@ -119,7 +128,7 @@ bool compareByDate(const CallRecord& record1, const CallRecord& record2) {
 	ss2 >> std::get_time(&tm2, "%d.%m.%Y");
 	return std::mktime(&tm1) < std::mktime(&tm2);
 }
-void IndividualTask::IndividualTasksInterface()
+void IndividualTask::individualTasksInterface()
 {
 	vector<CallRecord> records = ReadFromFileClass::getDataArray(GlobalVariablesClass::DataCallFile);
 	vector<CallRecord> recordsForTask;
@@ -211,7 +220,7 @@ bool compareByDuration(const CallRecord& record1, const CallRecord& record2) {
 bool compareByFIO(const CallRecord& record1, const CallRecord& record2) {
 	return record1.subscriberName < record2.subscriberName;
 }
-void IndividualTask::Sort()
+void IndividualTask::sort()
 {
 	int choice = 0;
 	do {

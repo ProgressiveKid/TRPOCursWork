@@ -30,13 +30,13 @@ void UserInterface(string login)
 			DataWorkerClass::viewData(DATA_CALL_FILE);
 			break;
 		case 2:
-			IndividualTask::IndividualTasksInterface();
+			IndividualTask::individualTasksInterface();
 			break;
 		case 3:
 			IndividualTask::Search();
 			break;
 		case 4:
-			IndividualTask::Sort();
+			IndividualTask::sort();
 			break;
 		case 5:
 			break;
@@ -141,13 +141,13 @@ void IndividualProcessing()
 		std::cin >> choice;
 		switch (choice) {
 		case 1:
-			IndividualTask::IndividualTasksInterface();
+			IndividualTask::individualTasksInterface();
 			break;
 		case 2:
 			IndividualTask::Search();
 			break;
 		case 3:
-			IndividualTask::Sort();
+			IndividualTask::sort();
 			break;
 		case 4:
 			break;
@@ -210,53 +210,66 @@ void AdminInterface(string login)
 }
 void Authorisation()
 {
-	cout << "Введите логин:\n";
-	string username;
-	string password;
-	cin >> username;
-	vector<User> records = ReadFromFileClass::getUserArray(USERS_FILE);
-	for (auto& item : records)
+	while (true)
 	{
-		if (item.login == username)
+		cout << "Введите логин:\n";
+		string username;
+		string password;
+		cin >> username;
+		bool isFounded = false;
+		vector<User> records = ReadFromFileClass::getUserArray(USERS_FILE);
+
+
+		for (auto& item : records)
 		{
-			cout << "Пользователь найден\nВведите пароль:\n";
-			char ch;
-			while ((ch = _getch()) != 13) { // 13 - код клавиши Enter
-				if (ch == '\b') { // если нажата клавиша Backspace
-					if (!password.empty()) {
-						cout << "\b \b";
-						password.pop_back(); // удаляем последний символ из строки
+			if (item.login == username)
+			{
+				isFounded = true;
+				cout << "Пользователь найден\nВведите пароль:\n";
+				char ch;
+				while ((ch = _getch()) != 13) { // 13 - код клавиши Enter
+					if (ch == '\b') { // если нажата клавиша Backspace
+						if (!password.empty()) {
+							cout << "\b \b";
+							password.pop_back(); // удаляем последний символ из строки
+						}
+					}
+					else {
+						password += ch;
+						cout << "*";
 					}
 				}
-				else {
-					password += ch;
-					cout << "*";
-				}
-			}
-			auto hashPassword = CryptoClass::hashPasswordWithSaltMethod(password, item.salt);
-			if (hashPassword == item.saltedHashPassword)
-			{
-				Username = username;
-				cout << "\nВы вошли в систему:\n";
-				if (item.role == "0") // это пользователь
+				auto hashPassword = CryptoClass::hashPasswordWithSaltMethod(password, item.salt);
+				if (hashPassword == item.saltedHashPassword)
 				{
-					UserInterface(item.login);
-				}
-				else if (item.role == "1") //администратор
-				{
-					AdminInterface(item.login);
+					Username = username;
+					cout << "\nВы вошли в систему:\n";
+					if (item.role == "0") // это пользователь
+					{
+						UserInterface(item.login);
+					}
+					else if (item.role == "1") //администратор
+					{
+						AdminInterface(item.login);
+					}
+					else
+					{
+						cout << "Неверная роль, обратитесь к администратору систему\n";
+					}
 				}
 				else
 				{
-					cout << "Неверная роль, обратитесь к администратору систему\n";
+					cout << "Неправильный пароль:\n";
 				}
 			}
-			else
-			{
-				cout << "Неправильный пароль:\n";
-			}
+
 		}
-	}
+		if (!isFounded)
+		{
+			cout << "Такой пользователь не найден:\n";
+
+		}
+	};
 }
 int main()
 {
