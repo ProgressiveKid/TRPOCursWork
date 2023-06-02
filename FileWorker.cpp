@@ -99,10 +99,20 @@
 		{
 			cout << "”кажите роль(0 - пользователь, 1 - администратор) \n";
 			cin >> role;
-			if (role != 1 && role != 0)
-				cout << "выберите 0 или 1\n";
+			bool result = cin.good();
+			if (result)
+			{
+				if (role != 1 && role != 0)
+					cout << "выберите 0 или 1\n";
+				else
+					break;
+			}
 			else
-				break;
+			{
+				cin.clear();
+				cin.ignore(INT_MAX, '\n');
+			}
+		
 		} while (true);
 		string FIO = getFullFIO();
 		int phoneNumber = 0;
